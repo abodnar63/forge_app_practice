@@ -4,4 +4,6 @@ export type ResolverResponse<T = any> = {
   data?: T;
 };
 
-export type GetTextResponse = ResolverResponse<string>
+export type GetTextResponse = ResolverResponse<string>;
+
+export type SaveTokenPayload = { token: string }

@@ -21,6 +21,7 @@ export const useFetchData = (): UseFetchData => {
             if (res.error) logError(res.error);
             
         } catch (err) {
+            
             logError(JSON.stringify(err));
         }
     }
