@@ -1,24 +1,50 @@
 import kvs from "@forge/kvs";
-import { GetTextResponse } from 'contracts'
+import { GetTextResponse, ResolverResponse } from 'contracts'
+import { fetchRepos } from './'
 
 const prefix = "gh-";
 
-export const setToken = async (key: string, value: string): Promise<GetTextResponse> => {
-  try {
-    console.log("setToken", key, value)
-    await kvs.setSecret(prefix+key, value);
+export const setToken = async (key: string, value: string): Promise<ResolverResponse> => {
+    // Token validation
+    try {
+        await fetchRepos(value);
+    } catch (err){
+        console.log("Error token validation", err)
+        return {
+            success: false,
+            error: 'Invalid Token'
+        };
+    }
+    try {
+        await kvs.setSecret(prefix+key, value);
+
+        return {
+            success: true,
+        };
+    } catch (e) {
+        console.log(`Error while setting data in storage`, e);
+
+        return {
+            success: false,
+        };
+    }
+};
+
+export const resetToken = async (key: string): Promise<ResolverResponse> => {
+    try {
+    await kvs.deleteSecret(prefix+key);
 
     return {
       success: true,
     };
   } catch (e) {
-    console.log(`Error while setting data in storage`, e);
+    console.log(`Error while removing data in storage`, e);
 
     return {
       success: false,
     };
-  }
-};
+  } 
+}
 
 export const getToken = async (key: string): Promise<GetTextResponse> => {
   try {
