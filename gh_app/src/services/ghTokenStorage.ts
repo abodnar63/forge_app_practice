@@ -7,7 +7,7 @@ const prefix = "gh-";
 export const setToken = async (key: string, value: string): Promise<ResolverResponse> => {
     // Token validation
     try {
-        await fetchRepos(value);
+      await fetchRepos(value);
     } catch (err){
         console.log("Error token validation", err)
         return {

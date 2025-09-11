@@ -63,10 +63,10 @@ export const useGHTokenFetching = (): UseGHToken => {
     const maskToken = (value: string | undefined): string | undefined => {
         if (!value) return value;
         const marker = value.length - 5;
-        const umasked1 = value.slice(0, 15);
+        const uтmasked1 = value.slice(0, 15);
         const unmasked2 = value.slice(marker, value.length);
         
-        return umasked1 + "*********************" + unmasked2;
+        return uтmasked1 + "*********************" + unmasked2;
     }
 
     useEffect(() => {

@@ -7,3 +7,12 @@ export type ResolverResponse<T = any> = {
 export type GetTextResponse = ResolverResponse<string>;
 
 export type SaveTokenPayload = { token: string }
+
+export type Repository = {
+  id: string,
+  name: string,
+  language: string,
+  size: number
+}
+
+export type GetRepositoriesResponse = ResolverResponse<List<Repository>>
