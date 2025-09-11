@@ -19,6 +19,8 @@ export class GHAPIClient {
     }
 
     const data = await response.json();
+
+    // console.log("GH Repos", data)
     
     return data;
   }

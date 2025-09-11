@@ -1,24 +1,32 @@
-import { GetRepositoriesResponse, Repository } from '../../contracts'
+import { GetRepositoriesResponse, RepositoryPayload } from '../../contracts'
 import { GHAPIClient } from '../clients'
+import { getToken } from './'
 
-export const fetchRepos = async (token: string): Promise<GetRepositoriesResponse> => {
+export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResponse> => {
     let data;
     try {
-        data = await GHAPIClient.fetchRepos(token);
+        const token = await getToken(accountId);
+        if (!token.data) {
+            return {
+                success: false,
+                error: `GH Token is missing`
+            };
+        }
+        data = await GHAPIClient.fetchRepos(token.data);
     } catch (err) {
         return {
             success: false,
             error: `Unable to fetch repositories ${JSON.stringify(err)}`
         };
     }
-    const repositories: Repository[] = [];
-    
+    const repositories: RepositoryPayload[] = [];
+
     for (let i = 0; i < data.length; i++) {
         let repo = data[i];
         repositories.push({
             name: repo.name as string,
             id: repo.id,
-            language: repo.lenguage,
+            language: repo.language,
             size: repo.size
         });
     }

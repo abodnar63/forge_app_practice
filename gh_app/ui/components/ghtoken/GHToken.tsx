@@ -1,9 +1,5 @@
 import { useGHTokenFetching } from '../../hooks/useGhToken'
-import { Box, Button, Inline } from "@forge/react"
-
-import { 
-    ErrorMessage
- } from '@forge/react';
+import { Box, Button, Inline, ErrorMessage } from "@forge/react"
 
 export const GHToken = () => {
     const { isLoading, token, error, goRepositories, resetToken } = useGHTokenFetching()

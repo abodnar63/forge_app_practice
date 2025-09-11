@@ -1,13 +1,13 @@
 import kvs from "@forge/kvs";
 import { GetTextResponse, ResolverResponse } from 'contracts'
-import { fetchRepos } from './'
+import { GHAPIClient } from '../clients'
 
 const prefix = "gh-";
 
 export const setToken = async (key: string, value: string): Promise<ResolverResponse> => {
     // Token validation
     try {
-      await fetchRepos(value);
+      await GHAPIClient.fetchRepos(value);
     } catch (err){
         console.log("Error token validation", err)
         return {

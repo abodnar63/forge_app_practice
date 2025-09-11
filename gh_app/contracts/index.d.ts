@@ -8,11 +8,11 @@ export type GetTextResponse = ResolverResponse<string>;
 
 export type SaveTokenPayload = { token: string }
 
-export type Repository = {
+export type RepositoryPayload = {
   id: string,
   name: string,
   language: string,
   size: number
 }
 
-export type GetRepositoriesResponse = ResolverResponse<List<Repository>>
+export type GetRepositoriesResponse = ResolverResponse<List<RepositoryPayload>>
