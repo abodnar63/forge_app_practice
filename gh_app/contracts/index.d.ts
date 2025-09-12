@@ -12,7 +12,23 @@ export type RepositoryPayload = {
   id: string,
   name: string,
   language: string,
-  size: number
+  size: number,
+  owner: string
+}
+
+export type GetRepoPullsPayload = {
+  repo: string
+  owner: string
+}
+
+export type RepoPullPayload = {
+  title: string,
+  state: string,
+  id: string,
+  owner: string,
+  url: string
 }
 
 export type GetRepositoriesResponse = ResolverResponse<List<RepositoryPayload>>
+
+export type GetRepoPullsResponse = ResolverResponse<List<RepoPullPayload>>

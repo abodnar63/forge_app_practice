@@ -1,3 +1,2 @@
-export { getText } from './greetings'
 export { getToken, setToken, resetToken } from './ghTokenStorage'
-export { fetchRepos } from './ghAPIService'
+export { fetchRepos, fetchRepoPulls } from './ghAPIService'

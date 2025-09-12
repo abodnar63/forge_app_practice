@@ -1,13 +1,8 @@
 import Resolver, { Request } from '@forge/resolver';
-import { getText } from '../services'
-import { SaveTokenPayload } from 'contracts'
-import { getToken, setToken, resetToken, fetchRepos } from '../services'
+import { GetRepoPullsPayload, SaveTokenPayload } from 'contracts'
+import { getToken, setToken, resetToken, fetchRepos, fetchRepoPulls } from '../services'
 
 const resolver = new Resolver();
-
-resolver.define('getText', (req: Request) => {
-  return getText(req);
-});
 
 resolver.define('saveGHToken', (req: Request<SaveTokenPayload>) => {
   const accountId = req.context.accountId;
@@ -32,6 +27,14 @@ resolver.define('fetchRepositories', (req: Request) => {
   const accountId = req.context.accountId;
 
   return fetchRepos(accountId);
+})
+
+resolver.define('fetchRepoPulls', (req: Request<GetRepoPullsPayload>) => {
+  const accountId = req.context.accountId;
+
+  console.log('fetchRepoPulls payload', req.payload)
+
+  return fetchRepoPulls(accountId, req.payload)
 })
 
 export const handler = resolver.getDefinitions();
