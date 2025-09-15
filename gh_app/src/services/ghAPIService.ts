@@ -3,10 +3,11 @@ import {
     RepositoryPayload,
     GetRepoPullsResponse,
     RepoPullPayload,
-    GetRepoPullsPayload
+    GetRepoPullsPayload,
+    JiraIssue
 } from '../../contracts'
-import { GHAPIClient, JiraAPIClient } from '../clients'
-import { getToken } from './'
+import { GHAPIClient } from '../clients'
+import { getToken, fetchJiraIssue } from './'
 
 export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResponse> => {
     let data;
@@ -68,12 +69,14 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
         const issue = await getIssueFromPull(pull);
         if (!issue) continue;
         if (pull.state !== "open") continue;
+        
         pulls.push({
             title: pull.title,
             state: pull.state,
             id: pull.id,
             owner: pull["user"]["login"],
-            url: pull["html_url"]
+            url: pull["html_url"],
+            issue: issue.url
         });
     }
 
@@ -84,15 +87,16 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
 }
 
 // Assuming that we use following format for pull request titles '[issue-key]: description'
-export const getIssueFromPull = async (pull : { title: string }): Promise<Response | null> => {
+export const getIssueFromPull = async (pull : { title: string }): Promise<JiraIssue | null> => {
     const issueKey = pull.title.match(/\[(.*?)\]/);
-
+    console.log("getIssueFromPull", pull)
     if (!issueKey || !issueKey[1]) return null;
 
     try {
-        const issue = await JiraAPIClient.fetchIssue(issueKey[1]);
+        const issue = await fetchJiraIssue(issueKey[1]);
         return issue;
     } catch (err){
+        console.log(`Error fetching jira issue1 "${issueKey[1]}"`, err)
         return null
     }
 }

@@ -18,6 +18,7 @@ export const PullRequest: React.FC<PullRequestViewProps> = ({props}) => {
             }}>
             <Link openNewTab href={props.url}>{props.title}</Link>
             <Text>Owner: {props.owner}</Text>
+            <Link openNewTab href={props.issue}>Jira Issue</Link>
         </Box>
     )
 }
