@@ -7,7 +7,8 @@ export const fetchJiraIssue = async (issueKey: string): Promise<JiraIssue | null
         const baseURL = await JiraAPIClient.getJiraBaseUrl();
         return {
             key: issue.key,
-            url: `${baseURL}/browse/${issue.key}`
+            url: `${baseURL}/browse/${issue.key}`,
+            status: issue.fields.status.name
         }
         
     } catch (err){

@@ -27,7 +27,7 @@ export type RepoPullPayload = {
   id: string,
   owner: string,
   url: string,
-  issue: string
+  issue: JiraIssue
 }
 
 export type GetRepositoriesResponse = ResolverResponse<List<RepositoryPayload>>
@@ -36,5 +36,6 @@ export type GetRepoPullsResponse = ResolverResponse<List<RepoPullPayload>>
 
 export type JiraIssue = {
   key: string,
-  url: string
+  url: string,
+  status: string
 }

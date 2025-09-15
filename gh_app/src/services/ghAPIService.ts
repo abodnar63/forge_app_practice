@@ -76,7 +76,7 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
             id: pull.id,
             owner: pull["user"]["login"],
             url: pull["html_url"],
-            issue: issue.url
+            issue: issue
         });
     }
 
@@ -89,7 +89,7 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
 // Assuming that we use following format for pull request titles '[issue-key]: description'
 export const getIssueFromPull = async (pull : { title: string }): Promise<JiraIssue | null> => {
     const issueKey = pull.title.match(/\[(.*?)\]/);
-    console.log("getIssueFromPull", pull)
+    
     if (!issueKey || !issueKey[1]) return null;
 
     try {

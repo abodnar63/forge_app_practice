@@ -32,8 +32,6 @@ resolver.define('fetchRepositories', (req: Request) => {
 resolver.define('fetchRepoPulls', (req: Request<GetRepoPullsPayload>) => {
   const accountId = req.context.accountId;
 
-  console.log('fetchRepoPulls payload', req.payload)
-
   return fetchRepoPulls(accountId, req.payload)
 })
 
