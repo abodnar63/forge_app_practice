@@ -28,7 +28,7 @@ export class GHAPIClient {
 
   static fetchRepoPulls = async (token: string, name: string, owner: string) => {
     const uri = this.HOST + `/repos/${owner}/${name}/pulls`
-    console.log("fetchRepoPulls", uri)
+    
     const response = await api.fetch(uri, {
       method: 'GET',
       headers: {

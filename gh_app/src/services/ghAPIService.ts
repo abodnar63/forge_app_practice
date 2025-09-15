@@ -5,7 +5,7 @@ import {
     RepoPullPayload,
     GetRepoPullsPayload
 } from '../../contracts'
-import { GHAPIClient } from '../clients'
+import { GHAPIClient, JiraAPIClient } from '../clients'
 import { getToken } from './'
 
 export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResponse> => {
@@ -64,9 +64,10 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
 
     const pulls: RepoPullPayload[] = []
 
-    for (let i = 0; i < data.length; i++) {
-        let pull = data[i];
-        if (data[i].state !== "open") continue;
+    for (const pull of data) {
+        const issue = await getIssueFromPull(pull);
+        if (!issue) continue;
+        if (pull.state !== "open") continue;
         pulls.push({
             title: pull.title,
             state: pull.state,
@@ -79,5 +80,19 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
     return {
         success: true,
         data: pulls
+    }
+}
+
+// Assuming that we use following format for pull request titles '[issue-key]: description'
+export const getIssueFromPull = async (pull : { title: string }): Promise<Response | null> => {
+    const issueKey = pull.title.match(/\[(.*?)\]/);
+
+    if (!issueKey || !issueKey[1]) return null;
+
+    try {
+        const issue = await JiraAPIClient.fetchIssue(issueKey[1]);
+        return issue;
+    } catch (err){
+        return null
     }
 }

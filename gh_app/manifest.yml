@@ -21,7 +21,13 @@ app:
 permissions:
   scopes:
     - storage:app
+    - read:jira-work
   external:
     fetch:
       backend:
-        - address: api.github.com
+        - remote: git-api
+remotes:
+  - key: git-api
+    baseUrl: "https://api.github.com"
+    operations:
+      - fetch
