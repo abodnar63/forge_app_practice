@@ -1,6 +1,6 @@
-# Forge Hello World
+# Forge
 
-This project contains a Forge app written in Javascript that displays `Hello World!` in a Jira admin page. 
+This project contains a Forge app written in Javascript for Jira admin page following requirements from here https://softserveinc-my.sharepoint.com/:w:/r/personal/mkotii_softserveinc_com/_layouts/15/Doc.aspx?sourcedoc=%7BCF0D0C55-04FD-4804-9B82-9AFB92DE97AB%7D&file=Forge%20Migration%20-%20Native%20Platforms%202.docx&fromShare=true&action=default&mobileredirect=true. 
 
 See [developer.atlassian.com/platform/forge/](https://developer.atlassian.com/platform/forge) for documentation and tutorials explaining Forge.
 
