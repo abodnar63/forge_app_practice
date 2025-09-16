@@ -6,7 +6,12 @@ modules:
         function: resolver
       render: native
       title: GitHub App
+  webtrigger:
+    - key: ghWebhook
+      function: ghWebhookHandler
   function:
+    - key : ghWebhookHandler
+      handler: index.ghWebhookHandler
     - key: resolver
       handler: index.handler
 resources:
@@ -22,6 +27,7 @@ permissions:
   scopes:
     - storage:app
     - read:jira-work
+    - write:jira-work
   external:
     fetch:
       backend:

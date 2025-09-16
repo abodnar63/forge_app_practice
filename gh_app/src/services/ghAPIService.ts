@@ -4,7 +4,8 @@ import {
     GetRepoPullsResponse,
     RepoPullPayload,
     GetRepoPullsPayload,
-    JiraIssue
+    JiraIssue,
+    ResolverResponse
 } from '../../contracts'
 import { GHAPIClient } from '../clients'
 import { getToken, fetchJiraIssue } from './'
@@ -69,11 +70,13 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
         const issue = await getIssueFromPull(pull);
         if (!issue) continue;
         if (pull.state !== "open") continue;
-        
+        // console.log("GH Service pull data", pull);
         pulls.push({
             title: pull.title,
             state: pull.state,
+            repo: payload.repo,
             id: pull.id,
+            number: pull.number,
             owner: pull["user"]["login"],
             url: pull["html_url"],
             issue: issue
@@ -98,5 +101,51 @@ export const getIssueFromPull = async (pull : { title: string }): Promise<JiraIs
     } catch (err){
         console.log(`Error fetching jira issue1 "${issueKey[1]}"`, err)
         return null
+    }
+}
+
+export const mergeRepoPull = async (accountId: string, pull: RepoPullPayload): Promise<ResolverResponse> => {
+    
+    try {
+        const token = await getToken(accountId);
+        if (!token.data) {
+            return {
+                success: false,
+                error: `GH Token is missing`
+            };
+        }
+        await GHAPIClient.mergeRepoPull(token.data, pull.owner, pull.repo, pull.number);
+    } catch (err) {
+        return {
+            success: false,
+            error: `Unable to fetch pull requests ${err}}`
+        };
+    }
+
+    return {
+        success: true
+    }
+}
+
+export const approveRepoPull = async (accountId: string, pull: RepoPullPayload): Promise<ResolverResponse> => {
+    
+    try {
+        const token = await getToken(accountId);
+        if (!token.data) {
+            return {
+                success: false,
+                error: `GH Token is missing`
+            };
+        }
+        await GHAPIClient.approveRepoPull(token.data, pull.owner, pull.repo, pull.number);
+    } catch (err) {
+        return {
+            success: false,
+            error: `Unable to approve pull request ${err}`
+        };
+    }
+
+    return {
+        success: true
     }
 }

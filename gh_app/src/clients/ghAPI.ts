@@ -43,9 +43,43 @@ export class GHAPIClient {
     }
 
     const data = await response.json();
-
-    // console.log("GH Pulls", name, data)
     
     return data;
+  }
+
+  static mergeRepoPull = async (token: string, owner: string, repo: string, pullNumber: number) => {
+    const response = await fetch(`${this.HOST}/repos/${owner}/${repo}/pulls/${pullNumber}/merge`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': this.VERSION
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`GitHub merge failed: ${response.status} ${await response.text()}`);
+    }
+
+    return await response.json();
+  }
+
+  static approveRepoPull = async (token: string, owner: string, repo: string, pullNumber: number) => {
+    const response = await fetch(`${this.HOST}/${owner}/${repo}/pulls/${pullNumber}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': this.VERSION
+      },
+      body: JSON.stringify({ event: 'APPROVE' })
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`GitHub PR approval failed: ${response.status} ${err}`);
+    }
+
+    return await response.json();
   }
 }

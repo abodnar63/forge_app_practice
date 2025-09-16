@@ -1,6 +1,14 @@
 import Resolver, { Request } from '@forge/resolver';
-import { GetRepoPullsPayload, SaveTokenPayload } from 'contracts'
-import { getToken, setToken, resetToken, fetchRepos, fetchRepoPulls } from '../services'
+import { GetRepoPullsPayload, RepoPullPayload, SaveTokenPayload } from 'contracts'
+import { 
+  getToken,
+  setToken,
+  resetToken,
+  fetchRepos,
+  fetchRepoPulls,
+  mergeRepoPull,
+  approveRepoPull
+} from '../services'
 
 const resolver = new Resolver();
 
@@ -33,6 +41,18 @@ resolver.define('fetchRepoPulls', (req: Request<GetRepoPullsPayload>) => {
   const accountId = req.context.accountId;
 
   return fetchRepoPulls(accountId, req.payload)
+})
+
+resolver.define('mergePull', (req: Request<RepoPullPayload>) => {
+  const accountId = req.context.accountId;
+
+  return mergeRepoPull(accountId, req.payload)
+})
+
+resolver.define('approvePull', (req: Request<RepoPullPayload>) => {
+  const accountId = req.context.accountId;
+
+  return approveRepoPull(accountId, req.payload)
 })
 
 export const handler = resolver.getDefinitions();

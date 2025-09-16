@@ -15,7 +15,7 @@ export const RepositoryCard:React.FC<RepositoryCardProps> = ({ repo }) => {
                 borderWidth: 'border.width',
                 borderColor: 'color.border.discovery',
                 padding: 'space.200',
-                width: '45%'
+                width: '100%'
             }}>
             <Text>Owner: {repo.owner}</Text>
             <Text>Name: {repo.name}</Text>
