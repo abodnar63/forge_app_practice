@@ -1,14 +1,15 @@
 import { RepoPullPayload } from "contracts"
-import { Link, Box, Text, Button, Inline, ErrorMessage } from "@forge/react"
+import { Link, Box, Text, LoadingButton, Inline, ErrorMessage } from "@forge/react"
 import React from "react"
-import { useRepository } from "../../hooks/useRepositories"
+import { usePullRequest } from "../../hooks/usePullRequests"
 
 type PullRequestViewProps = {
-    props: RepoPullPayload
+    props: RepoPullPayload,
+    merged: (pull: RepoPullPayload) => void
 } 
 
-export const PullRequest: React.FC<PullRequestViewProps> = ({props}) => {
-    const { isApproving, isMerging, approve, merge, error} = useRepository(props);
+export const PullRequest: React.FC<PullRequestViewProps> = ({props, merged}) => {
+    const { isApproving, isMerging, approve, merge, error, isApproved} = usePullRequest(props, merged);
     return (
         <Box xcss={{
                 backgroundColor: 'color.background.accent.orange.subtler',
@@ -16,15 +17,16 @@ export const PullRequest: React.FC<PullRequestViewProps> = ({props}) => {
                 borderStyle: 'solid',
                 borderWidth: 'border.width',
                 borderColor: 'color.border.accent.green',
-                padding: 'space.200'
+                padding: 'space.200',
+                marginBottom: 'space.200'
             }}>
             <Link openNewTab href={props.url}>{props.title}</Link>
             <Text>Owner: {props.owner}</Text>
             <Text>Issue: <Link openNewTab href={props.issue.url}>{props.issue.status}</Link></Text>
                     
             <Inline space="space.200">
-                <Button isDisabled={isApproving} onClick={approve} appearance="primary">Approve</Button>
-                <Button isDisabled={isMerging} onClick={merge} appearance="primary">Merge</Button>
+                <LoadingButton isDisabled={isApproving || isApproved} isLoading={isApproving} onClick={approve} appearance="primary">Approve</LoadingButton>
+                <LoadingButton isDisabled={isMerging} isLoading={isMerging} onClick={merge} appearance="primary">Merge</LoadingButton>
             </Inline>
             {error && <ErrorMessage>{error}</ErrorMessage>}
         </Box>

@@ -63,7 +63,8 @@ export class GHAPIClient {
   }
 
   static approveRepoPull = async (token: string, owner: string, repo: string, pullNumber: number) => {
-    const response = await fetch(`${this.HOST}/${owner}/${repo}/pulls/${pullNumber}/reviews`, {
+    const uri = `${this.HOST}/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`;
+    const response = await fetch(uri, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

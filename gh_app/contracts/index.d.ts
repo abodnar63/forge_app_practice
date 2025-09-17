@@ -27,6 +27,7 @@ export type RepoPullPayload = {
   id: string,
   owner: string,
   repo: string,
+  repoOwner: string,
   url: string,
   number: number,
   issue: JiraIssue

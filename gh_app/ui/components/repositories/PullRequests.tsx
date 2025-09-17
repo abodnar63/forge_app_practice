@@ -10,7 +10,7 @@ type PullRequestsProps = {
 }
 
 export const PullRequests:React.FC<PullRequestsProps> = ({ props }) => {
-    const { isLoading, pulls, error } = usePullRequests(props.repo, props.owner)
+    const { isLoading, pulls, error, merged } = usePullRequests(props.repo, props.owner)
 
     if (isLoading) {
         return <>Loading...</>
@@ -25,7 +25,7 @@ export const PullRequests:React.FC<PullRequestsProps> = ({ props }) => {
     }
 
     const renderPullRequests = () => {
-        return pulls.map(pull => <PullRequest key={pull.id} props={pull} />)
+        return pulls.map(pull => <PullRequest merged={merged} key={pull.id} props={pull} />)
     }
 
     return (

@@ -85,14 +85,16 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
             title: pull.title,
             state: pull.state,
             repo: payload.repo,
+            repoOwner: payload.owner,
             id: pull.id,
             number: pull.number,
             owner: pull["user"]["login"],
             url: pull["html_url"],
             issue: issue
         });
+        log.info(`fetchRepoPulls`, pull)
     }
-
+    
     log.info(`fetchRepoPulls: returns ${pulls.length} pulls for ${accountId} repo: ${payload.repo}`)
 
     return {
@@ -126,13 +128,13 @@ export const mergeRepoPull = async (accountId: string, pull: RepoPullPayload): P
                 error: `GH Token is missing`
             };
         }
-        await GHAPIClient.mergeRepoPull(token.data, pull.owner, pull.repo, pull.number);
+        await GHAPIClient.mergeRepoPull(token.data, pull.repoOwner, pull.repo, pull.number);
         log.info(`mergeRepoPull: done by ${accountId} for pull ${pull.title}`)
     } catch (err) {
         log.error(`mergeRepoPull: failed by ${accountId} for pull ${pull.title} error: ${err}`)
         return {
             success: false,
-            error: `Unable to fetch pull requests ${err}}`
+            error: `Unable to merge pull request ${err}}`
         };
     }
 
@@ -151,10 +153,10 @@ export const approveRepoPull = async (accountId: string, pull: RepoPullPayload):
                 error: `GH Token is missing`
             };
         }
-        await GHAPIClient.approveRepoPull(token.data, pull.owner, pull.repo, pull.number);
-        log.info(`mergeRepoPull: done by ${accountId} for pull ${pull.title}`)
+        await GHAPIClient.approveRepoPull(token.data, pull.repoOwner, pull.repo, pull.number);
+        log.info(`approveRepoPull: done by ${accountId} for pull ${pull.title}`)
     } catch (err) {
-        log.error(`approveRepoPull: failed by ${accountId} for pull ${pull.title} error: ${err}`)
+        log.error(`approveRepoPull: failed by ${accountId} for pull ${JSON.stringify(pull)} error: ${err}`)
         return {
             success: false,
             error: `Unable to approve pull request ${err}`
