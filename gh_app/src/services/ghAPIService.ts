@@ -34,9 +34,12 @@ export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResp
         };
     }
     const repositories: RepositoryPayload[] = [];
-
-    for (let i = 0; i < data.length; i++) {
-        let repo = data[i];
+    
+    const dataSorted = [...data].sort((a, b) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    for (let i = 0; i < dataSorted.length; i++) {
+        let repo = dataSorted[i];
         repositories.push({
             name: repo.name as string,
             id: repo.id,
@@ -92,7 +95,6 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
             url: pull["html_url"],
             issue: issue
         });
-        log.info(`fetchRepoPulls`, pull)
     }
     
     log.info(`fetchRepoPulls: returns ${pulls.length} pulls for ${accountId} repo: ${payload.repo}`)

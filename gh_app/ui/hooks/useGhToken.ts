@@ -40,18 +40,30 @@ type UseGHToken = {
     isLoading: boolean,
     token: string|undefined,
     error: string|undefined,
+    isResetModalOpen: boolean,
     goRepositories: () => void,
-    resetToken: () => void
+    resetToken: () => void,
+    closeModal: () => void,
+    resetHandler: () => void
 }
 
 export const useGHTokenFetching = (): UseGHToken => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [token, setToken] = useState<string|undefined>("")
     const [error, setError] = useState<string|undefined>("")
+    const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false)
     const context = useContext(NavigationContext);
 
     const goRepositories = () => {
         context?.setCurrentView(VIEW.Repositories)
+    }
+    
+    const closeModal = () => {
+        setIsResetModalOpen(false);
+    }
+
+    const resetHandler = () => {
+        setIsResetModalOpen(true);
     }
 
     const resetToken = async () => {
@@ -94,9 +106,12 @@ export const useGHTokenFetching = (): UseGHToken => {
 
     return {
         isLoading,
+        isResetModalOpen,
         error,
         token,
         goRepositories,
-        resetToken
+        resetToken,
+        resetHandler,
+        closeModal
     }
 }
