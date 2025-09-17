@@ -9,12 +9,17 @@ import {
 } from '../../contracts'
 import { GHAPIClient } from '../clients'
 import { getToken, fetchJiraIssue } from './'
+import { createLogger } from '../shared/logger'
+
+const log = createLogger("Github Service")
 
 export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResponse> => {
     let data;
+    log.info(`fetchRepos: calling for ${accountId}`)
     try {
         const token = await getToken(accountId);
         if (!token.data) {
+            
             return {
                 success: false,
                 error: `GH Token is missing`
@@ -22,6 +27,7 @@ export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResp
         }
         data = await GHAPIClient.fetchRepos(token.data);
     } catch (err) {
+        log.error(`Failed fetchRepos for ${accountId} error: ${err}`)
         return {
             success: false,
             error: `Unable to fetch repositories ${JSON.stringify(err)}`
@@ -40,6 +46,8 @@ export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResp
         });
     }
 
+    log.info(`fetchRepos: returns ${repositories.length} repos for ${accountId}`)
+
     return {
         success: true,
         data: repositories
@@ -48,6 +56,7 @@ export const fetchRepos = async (accountId: string): Promise<GetRepositoriesResp
 
 export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPayload): Promise<GetRepoPullsResponse> => {
     let data;
+    log.info(`fetchRepoPulls: calling for ${accountId} and repo ${payload.repo}`)
     try {
         const token = await getToken(accountId);
         if (!token.data) {
@@ -58,6 +67,7 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
         }
         data = await GHAPIClient.fetchRepoPulls(token.data, payload.repo, payload.owner);
     } catch (err) {
+        log.error(`fetchRepoPulls: Failed  for ${accountId} and repo: ${payload.repo} with error: ${err}`)
         return {
             success: false,
             error: `Unable to fetch pull requests ${JSON.stringify(err)}`
@@ -70,7 +80,7 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
         const issue = await getIssueFromPull(pull);
         if (!issue) continue;
         if (pull.state !== "open") continue;
-        // console.log("GH Service pull data", pull);
+        
         pulls.push({
             title: pull.title,
             state: pull.state,
@@ -83,6 +93,8 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
         });
     }
 
+    log.info(`fetchRepoPulls: returns ${pulls.length} pulls for ${accountId} repo: ${payload.repo}`)
+
     return {
         success: true,
         data: pulls
@@ -92,20 +104,20 @@ export const fetchRepoPulls = async (accountId: string, payload: GetRepoPullsPay
 // Assuming that we use following format for pull request titles '[issue-key]: description'
 export const getIssueFromPull = async (pull : { title: string }): Promise<JiraIssue | null> => {
     const issueKey = pull.title.match(/\[(.*?)\]/);
-    
+    log.info(`getIssueFromPull: searching for issue ${pull.title}`)
     if (!issueKey || !issueKey[1]) return null;
 
     try {
         const issue = await fetchJiraIssue(issueKey[1]);
         return issue;
     } catch (err){
-        console.log(`Error fetching jira issue1 "${issueKey[1]}"`, err)
+        log.error(`getIssueFromPull: Error fetching jira issue "${issueKey[1]}"`, err)
         return null
     }
 }
 
 export const mergeRepoPull = async (accountId: string, pull: RepoPullPayload): Promise<ResolverResponse> => {
-    
+    log.info(`mergeRepoPull: requested by ${accountId} for pull ${pull.title}`)
     try {
         const token = await getToken(accountId);
         if (!token.data) {
@@ -115,7 +127,9 @@ export const mergeRepoPull = async (accountId: string, pull: RepoPullPayload): P
             };
         }
         await GHAPIClient.mergeRepoPull(token.data, pull.owner, pull.repo, pull.number);
+        log.info(`mergeRepoPull: done by ${accountId} for pull ${pull.title}`)
     } catch (err) {
+        log.error(`mergeRepoPull: failed by ${accountId} for pull ${pull.title} error: ${err}`)
         return {
             success: false,
             error: `Unable to fetch pull requests ${err}}`
@@ -128,7 +142,7 @@ export const mergeRepoPull = async (accountId: string, pull: RepoPullPayload): P
 }
 
 export const approveRepoPull = async (accountId: string, pull: RepoPullPayload): Promise<ResolverResponse> => {
-    
+    log.info(`approveRepoPull: requested by ${accountId} for pull ${pull.title}`)
     try {
         const token = await getToken(accountId);
         if (!token.data) {
@@ -138,7 +152,9 @@ export const approveRepoPull = async (accountId: string, pull: RepoPullPayload):
             };
         }
         await GHAPIClient.approveRepoPull(token.data, pull.owner, pull.repo, pull.number);
+        log.info(`mergeRepoPull: done by ${accountId} for pull ${pull.title}`)
     } catch (err) {
+        log.error(`approveRepoPull: failed by ${accountId} for pull ${pull.title} error: ${err}`)
         return {
             success: false,
             error: `Unable to approve pull request ${err}`
