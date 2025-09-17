@@ -1,6 +1,7 @@
 Jira–GitHub Integration App (Forge)
 ===================================
 
+
 This project is an [Atlassian Forge](https://developer.atlassian.com/platform/forge/) app that integrates **Jira** with **GitHub**.  
 It allows Jira users to view, approve, and merge GitHub pull requests (PRs) that have associated Jira tickets directly from Jira. Once a PR is merged, the corresponding Jira issue is automatically transitioned to **Done**.
 
